@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/muchlist/mini_pos/configs"
+	"github.com/muchlist/mini_pos/db"
 	"github.com/muchlist/mini_pos/utils/logger"
 	"log"
 	"os"
@@ -14,6 +15,8 @@ func RunApp() {
 	// Init config, logger dan db
 	configs.InitConfig()
 	logger.InitLogger()
+	db.Init()
+	defer db.Close()
 
 	// membuat fiber app
 	app := fiber.New()
