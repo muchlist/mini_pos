@@ -87,18 +87,17 @@ func (m *merchantDao) Insert(ctx context.Context, input dto.MerchantCreateReq) (
 		keyCreatedAt,
 		keyUpdatedAt,
 		keyUserRole).
-		Values(response.MerchantID, 0, input.OwnerName, input.OwnerEmail, "-", timeNow, timeNow, "owner").
+		Values(response.MerchantID, 0, input.OwnerName, input.OwnerEmail, input.DefaultPassword, timeNow, timeNow, "owner").
 		Suffix(dao.Returning(keyUserEmail, keyUserName)).ToSql()
 
 	if err != nil {
 		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
 	}
 
-	var userID int
-	err = trx.QueryRow(ctx, sqlStatement, args...).Scan(&userID)
+	err = trx.QueryRow(ctx, sqlStatement, args...).Scan(&response.OwnerEmail, &response.OwnerName)
 	if err != nil {
 		logger.Error("error saat trx query users(Insert:1)", err)
-		return nil, rest_err.NewBadRequestError("User tidak tersedia")
+		return nil, rest_err.NewBadRequestError("Email tidak tersedia")
 	}
 
 	// ------------------------------------------------------------- commit

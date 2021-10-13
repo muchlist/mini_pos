@@ -13,24 +13,23 @@ type MerchantServiceAssumer interface {
 }
 
 type merchantService struct {
-	mdao   merchant_dao.MerchantDaoAssumer
-	mCrypt mcrypt.BcryptAssumer
+	dao    merchant_dao.MerchantDaoAssumer
+	crypto mcrypt.BcryptAssumer
 }
 
-func NewMerchantService(
-	mdao merchant_dao.MerchantDaoAssumer,
-	mCrypt mcrypt.BcryptAssumer) MerchantServiceAssumer {
+func NewMerchantService(mDao merchant_dao.MerchantDaoAssumer, mCrypt mcrypt.BcryptAssumer) MerchantServiceAssumer {
 	return &merchantService{
-		mdao:   mdao,
-		mCrypt: mCrypt,
+		dao:    mDao,
+		crypto: mCrypt,
 	}
 }
 
 func (m *merchantService) CreateMerchant(ctx context.Context, req dto.MerchantCreateReq) (*dto.MerchantCreateRes, rest_err.APIError) {
-	hashPw, err := m.mCrypt.GenerateHash(req.DefaultPassword)
+	// hashing default password yang diberikan
+	hashPw, err := m.crypto.GenerateHash(req.DefaultPassword)
 	if err != nil {
 		return nil, err
 	}
 	req.DefaultPassword = hashPw
-	return m.mdao.Insert(ctx, req)
+	return m.dao.Insert(ctx, req)
 }
