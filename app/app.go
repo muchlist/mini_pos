@@ -31,7 +31,7 @@ func RunApp() {
 		_ = app.Shutdown()
 	}()
 
-	// <--- prepareEndPoint disini
+	prepareEndPoint(app)
 
 	// blocking and listen for fiber
 	if err := app.Listen(":3500"); err != nil {
