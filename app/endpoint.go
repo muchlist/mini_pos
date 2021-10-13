@@ -27,4 +27,8 @@ func prepareEndPoint(app *fiber.App) {
 
 	// Merchant Endpoint
 	api.Post("/merchant", merchantHandler.CreateMerchant)
+	api.Get("/merchant/:id", merchantHandler.GetMerchant)
+	api.Get("/merchant", merchantHandler.FindMerchant)
+	api.Put("/merchant/:id", merchantHandler.EditMerchant)
+	api.Delete("/merchant/:id", merchantHandler.DeleteMerchant)
 }

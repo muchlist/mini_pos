@@ -1,6 +1,10 @@
 package dto
 
-import "time"
+import (
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"time"
+)
 
 type Merchant struct {
 	Id           int    `json:"id"`
@@ -27,9 +31,35 @@ type MerchantCreateReq struct {
 	DefaultPassword string `json:"default_password"`
 }
 
+func (m MerchantCreateReq) Validate() error {
+	if err := validation.ValidateStruct(&m,
+		validation.Field(&m.MerchantName, validation.Required),
+		validation.Field(&m.OwnerName, validation.Required),
+		validation.Field(&m.OwnerEmail, validation.Required, is.Email),
+		validation.Field(&m.DefaultPassword, validation.Required, validation.Length(3, 20)),
+	); err != nil {
+		return err
+	}
+	return nil
+}
+
 type MerchantCreateRes struct {
 	MerchantID   int    `json:"merchant_id"`
 	MerchantName string `json:"merchant_name"`
 	OwnerEmail   string `json:"owner_email"`
 	OwnerName    string `json:"owner_name"`
+}
+
+type MerchantEditReq struct {
+	Id           int    `json:"-"`
+	MerchantName string `json:"merchant_name"`
+}
+
+func (m MerchantEditReq) Validate() error {
+	if err := validation.ValidateStruct(&m,
+		validation.Field(&m.MerchantName, validation.Required),
+	); err != nil {
+		return err
+	}
+	return nil
 }
