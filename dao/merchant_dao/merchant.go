@@ -32,18 +32,6 @@ const (
 	keyUserRole       = "role"
 )
 
-type MerchantDaoAssumer interface {
-	MerchantSaver
-}
-
-type MerchantSaver interface {
-	Insert(ctx context.Context, input dto.MerchantCreateReq) (*dto.MerchantCreateRes, rest_err.APIError)
-	Edit(ctx context.Context, input dto.Merchant) (*dto.Merchant, rest_err.APIError)
-	Delete(ctx context.Context, id int) rest_err.APIError
-	Get(ctx context.Context, id int) (*dto.Merchant, rest_err.APIError)
-	FindWithCursor(ctx context.Context, opt FindParams) ([]dto.Merchant, rest_err.APIError)
-}
-
 type merchantDao struct {
 	db *pgxpool.Pool
 	sb squirrel.StatementBuilderType
