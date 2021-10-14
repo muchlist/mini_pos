@@ -23,6 +23,19 @@ type ProductHandler struct {
 	service product_serv.ProductServiceAssumer
 }
 
+// CreateProduct menambahkan outlets
+// @Summary create product for merchant user
+// @Description Menambahkan product sesuai dengan ID merchant yang melekat di user
+// @ID product-create
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param ReqBody body dto.ProductCreateRequest true "Body raw JSON"
+// @Success 200 {object} wrap.Resp{data=wrap.RespMsgExample}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products [post]
 func (u *ProductHandler) CreateProduct(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -75,6 +88,20 @@ func (u *ProductHandler) CreateProduct(c *fiber.Ctx) error {
 		})
 }
 
+// Edit
+// @Summary edit product
+// @Description melakukan perubahan data pada product
+// @ID product-edit
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param id path int true "Product ID"
+// @Param ReqBody body dto.ProductEditRequest true "Body raw JSON"
+// @Success 200 {object} wrap.Resp{data=dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products/{id} [put]
 func (u *ProductHandler) Edit(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -129,6 +156,19 @@ func (u *ProductHandler) Edit(c *fiber.Ctx) error {
 		})
 }
 
+// Delete menghapus product
+// @Summary delete product by ID
+// @Description menghapus product berdasarkan ID
+// @ID product-delete
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Param id path int true "Product ID"
+// @Success 200 {object} wrap.RespMsgExample
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products/{id} [delete]
 func (u *ProductHandler) Delete(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -171,6 +211,19 @@ func (u *ProductHandler) Delete(c *fiber.Ctx) error {
 		})
 }
 
+// SetCustomPrice
+// @Summary menambahkan harga custom
+// @Description menambahkan harga custom product pada outlet tertentu
+// @ID product-set-price
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param ReqBody body dto.ProductPriceRequest true "Body raw JSON"
+// @Success 200 {object} wrap.Resp{data=dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /set-price/{id} [post]
 func (u *ProductHandler) SetCustomPrice(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -199,7 +252,6 @@ func (u *ProductHandler) SetCustomPrice(c *fiber.Ctx) error {
 	}
 
 	result, apiErr := u.service.SetCustomPrice(c.Context(), *claims, req)
-
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
@@ -214,6 +266,20 @@ func (u *ProductHandler) SetCustomPrice(c *fiber.Ctx) error {
 		})
 }
 
+// Get menampilkan product berdasarkan id
+// @Summary get product by ID
+// @Description menampilkan product berdasarkan userID, query outlet untuk mendapatkan harga custom pada outlet tertentu
+// @ID product-get
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param id path int true "Product ID"
+// @Param outlet query int false "Outlet Price"
+// @Success 200 {object} wrap.Resp{data=dto.ProductModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products/{id} [get]
 func (u *ProductHandler) Get(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -223,6 +289,8 @@ func (u *ProductHandler) Get(c *fiber.Ctx) error {
 			Error: apiErr,
 		})
 	}
+
+	outletID := sfunc.StrToInt(c.Query("outlet"), 0)
 	productID, err := c.ParamsInt("id")
 	if err != nil {
 		apiErr := rest_err.NewBadRequestError("kesalahan input, id harus berupa angka")
@@ -231,7 +299,6 @@ func (u *ProductHandler) Get(c *fiber.Ctx) error {
 			Error: apiErr,
 		})
 	}
-	outletID := sfunc.StrToInt(c.Query("outlet"), 0)
 
 	product, apiErr := u.service.Get(c.Context(), *claims, productID, outletID)
 	if apiErr != nil {
@@ -247,6 +314,22 @@ func (u *ProductHandler) Get(c *fiber.Ctx) error {
 	})
 }
 
+// Find menampilkan list product
+// @Summary find product
+// @Description menampilkan daftar product untuk merchant tertentu, gunakan query outlet untuk mendapatkan harga product sesuai outlet
+// @ID product-find
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param limit query int false "Limit"
+// @Param offset query int false "Offset cursor untuk skip data sebanyak offsite"
+// @Param search query string false "Search apabila di isi akan melakukan pencarian berdasarkan nama outlet"
+// @Param outlet query int false "tambahkan outlet untuk melihat harga outlet tertentu"
+// @Success 200 {object} wrap.Resp{data=[]dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products [get]
 func (u *ProductHandler) Find(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -284,7 +367,19 @@ func (u *ProductHandler) Find(c *fiber.Ctx) error {
 	})
 }
 
-// UploadImage melakukan pengambilan file menggunakan form "image" mengecek ekstensi dan memasukkannya ke database
+// UploadImage
+// @Summary menambahkan foto pada product
+// @Description menambahkan foto pada product
+// @ID product-upload-photo
+// @Accept json
+// @Produce json
+// @Tags Product
+// @Security bearerAuth
+// @Param image formData file true "file gambar"
+// @Success 200 {object} wrap.Resp{data=dto.ProductModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /products-image/{id} [post]
 func (u *ProductHandler) UploadImage(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -306,21 +401,33 @@ func (u *ProductHandler) UploadImage(c *fiber.Ctx) error {
 	// cek apakah ID cctv && branch ada
 	_, apiErr := u.service.Get(c.Context(), *claims, id, 0)
 	if apiErr != nil {
-		return c.Status(apiErr.Status()).JSON(fiber.Map{"error": apiErr, "data": nil})
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
 	}
 
 	randomName := fmt.Sprintf("%d%v", id, time.Now().Unix())
 	// simpan image
 	pathInDb, apiErr := saveImage(c, *claims, "products", randomName)
 	if apiErr != nil {
-		return c.Status(apiErr.Status()).JSON(fiber.Map{"error": apiErr, "data": nil})
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
 	}
 
 	// update path image di database
-	cctvResult, apiErr := u.service.SetImagePath(c.Context(), id, pathInDb)
+	result, apiErr := u.service.SetImagePath(c.Context(), id, pathInDb)
 	if apiErr != nil {
-		return c.Status(apiErr.Status()).JSON(fiber.Map{"error": apiErr, "data": nil})
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
 	}
 
-	return c.JSON(fiber.Map{"error": nil, "data": cctvResult})
+	return c.JSON(wrap.Resp{
+		Data:  result,
+		Error: nil,
+	})
 }

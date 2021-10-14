@@ -93,6 +93,92 @@ definitions:
         example: 1631341964
         type: integer
     type: object
+  dto.ProductCreateRequest:
+    properties:
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+    type: object
+  dto.ProductEditRequest:
+    properties:
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+    type: object
+  dto.ProductModel:
+    properties:
+      buy_price:
+        description: berasal dari table lain
+        example: 1000000
+        type: integer
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      image:
+        example: image/products/121634211915.jpg
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      merchant_id:
+        example: 20
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+      sell_price:
+        description: berasal dari table lain
+        example: 1000000
+        type: integer
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.ProductPriceRequest:
+    properties:
+      buy_price:
+        example: 1000000
+        type: integer
+      outlet_id:
+        example: 20
+        type: integer
+      product_id:
+        example: 1
+        type: integer
+      sell_price:
+        example: 1050000
+        type: integer
+    type: object
   dto.UserEditRequest:
     properties:
       def_outlet:
@@ -850,6 +936,307 @@ paths:
       summary: edit outlet
       tags:
       - Outlet
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar product untuk merchant tertentu, gunakan query
+        outlet untuk mendapatkan harga product sesuai outlet
+      operationId: product-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          outlet
+        in: query
+        name: search
+        type: string
+      - description: tambahkan outlet untuk melihat harga outlet tertentu
+        in: query
+        name: outlet
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.OutletModel'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find product
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan product sesuai dengan ID merchant yang melekat di user
+      operationId: product-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/wrap.RespMsgExample'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create product for merchant user
+      tags:
+      - Product
+  /products-image/{id}:
+    post:
+      consumes:
+      - application/json
+      description: menambahkan foto pada product
+      operationId: product-upload-photo
+      parameters:
+      - description: file gambar
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ProductModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: menambahkan foto pada product
+      tags:
+      - Product
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus product berdasarkan ID
+      operationId: product-delete
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete product by ID
+      tags:
+      - Outlet
+    get:
+      consumes:
+      - application/json
+      description: menampilkan product berdasarkan userID, query outlet untuk mendapatkan
+        harga custom pada outlet tertentu
+      operationId: product-get
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Outlet Price
+        in: query
+        name: outlet
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ProductModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get product by ID
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada product
+      operationId: product-edit
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit product
+      tags:
+      - Product
   /profile:
     get:
       consumes:
@@ -920,6 +1307,54 @@ paths:
       summary: refresh token
       tags:
       - Access
+  /set-price/{id}:
+    post:
+      consumes:
+      - application/json
+      description: menambahkan harga custom product pada outlet tertentu
+      operationId: product-set-price
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductPriceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: menambahkan harga custom
+      tags:
+      - Product
   /users:
     get:
       consumes:

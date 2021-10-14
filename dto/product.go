@@ -3,24 +3,24 @@ package dto
 import validation "github.com/go-ozzo/ozzo-validation/v4"
 
 type ProductModel struct {
-	ID              int             `json:"id"`
-	MerchantID      int             `json:"merchant_id"`
-	Code            UppercaseString `json:"code"` // SKU
-	Name            UppercaseString `json:"name"`
-	MasterBuyPrice  int             `json:"master_buy_price"`
-	MasterSellPrice int             `json:"master_sell_price"`
-	BuyPrice        int             `json:"buy_price"`  // berasal dari table lain
-	SellPrice       int             `json:"sell_price"` // berasal dari table lain
-	Image           string          `json:"image"`
-	CreatedAt       int64           `json:"created_at"`
-	UpdatedAt       int64           `json:"updated_at"`
+	ID              int             `json:"id" example:"1"`
+	MerchantID      int             `json:"merchant_id" example:"20"`
+	Code            UppercaseString `json:"code" example:"CAT-20"` // SKU
+	Name            UppercaseString `json:"name" example:"JAM TANGAN"`
+	MasterBuyPrice  int             `json:"master_buy_price" example:"1000000"`
+	MasterSellPrice int             `json:"master_sell_price" example:"1050000"`
+	BuyPrice        int             `json:"buy_price" example:"1000000"`  // berasal dari table lain
+	SellPrice       int             `json:"sell_price" example:"1000000"` // berasal dari table lain
+	Image           string          `json:"image" example:"image/products/121634211915.jpg"`
+	CreatedAt       int64           `json:"created_at" example:"1631341964"`
+	UpdatedAt       int64           `json:"updated_at" example:"1631341964"`
 }
 
 type ProductCreateRequest struct {
-	Code            string `json:"code"` // SKU
-	Name            string `json:"name"`
-	MasterBuyPrice  int    `json:"master_buy_price"`
-	MasterSellPrice int    `json:"master_sell_price"`
+	Code            string `json:"code" example:"CAT-20"` // SKU
+	Name            string `json:"name" example:"JAM TANGAN"`
+	MasterBuyPrice  int    `json:"master_buy_price" example:"1000000"`
+	MasterSellPrice int    `json:"master_sell_price" example:"1050000"`
 }
 
 func (p ProductCreateRequest) Validate() error {
@@ -34,10 +34,10 @@ func (p ProductCreateRequest) Validate() error {
 
 type ProductEditRequest struct {
 	ID              int    `json:"-"`
-	Code            string `json:"code"` // SKU
-	Name            string `json:"name"`
-	MasterBuyPrice  int    `json:"master_buy_price"`
-	MasterSellPrice int    `json:"master_sell_price"`
+	Code            string `json:"code" example:"CAT-20"` // SKU
+	Name            string `json:"name" example:"JAM TANGAN"`
+	MasterBuyPrice  int    `json:"master_buy_price" example:"1000000"`
+	MasterSellPrice int    `json:"master_sell_price" example:"1050000"`
 }
 
 func (p ProductEditRequest) Validate() error {
@@ -52,26 +52,26 @@ func (p ProductEditRequest) Validate() error {
 type ProductEditModel struct {
 	WhereID         int
 	WhereMerchantID int
-	Code            UppercaseString `json:"code"` // SKU
-	Name            UppercaseString `json:"name"`
-	MasterBuyPrice  int             `json:"master_buy_price"`
-	MasterSellPrice int             `json:"master_sell_price"`
+	Code            UppercaseString
+	Name            UppercaseString
+	MasterBuyPrice  int
+	MasterSellPrice int
 }
 
 type ProductPriceModel struct {
-	ID        UppercaseString `json:"id"` // combine productID-outletID
-	ProductID int             `json:"product_id"`
-	OutletID  int             `json:"outlet_id"`
-	BuyPrice  int             `json:"buy_price"`
-	SellPrice int             `json:"sell_price"`
-	UpdatedAt int64           `json:"updated_at"`
+	ID        UppercaseString `json:"id"  example:"1-20"` // combine productID-outletID
+	ProductID int             `json:"product_id"  example:"1"`
+	OutletID  int             `json:"outlet_id" example:"20"`
+	BuyPrice  int             `json:"buy_price" example:"1000000"`
+	SellPrice int             `json:"sell_price" example:"1050000"`
+	UpdatedAt int64           `json:"updated_at" example:"1631341964"`
 }
 
 type ProductPriceRequest struct {
-	ProductID int `json:"product_id"`
-	OutletID  int `json:"outlet_id"`
-	BuyPrice  int `json:"buy_price"`
-	SellPrice int `json:"sell_price"`
+	ProductID int `json:"product_id"  example:"1"`
+	OutletID  int `json:"outlet_id" example:"20"`
+	BuyPrice  int `json:"buy_price" example:"1000000"`
+	SellPrice int `json:"sell_price" example:"1050000"`
 }
 
 func (p ProductPriceRequest) Validate() error {

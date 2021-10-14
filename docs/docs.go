@@ -1065,6 +1065,541 @@ var doc = `{
                 }
             }
         },
+        "/products": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "menampilkan daftar product untuk merchant tertentu, gunakan query outlet untuk mendapatkan harga product sesuai outlet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "find product",
+                "operationId": "product-find",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset cursor untuk skip data sebanyak offsite",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search apabila di isi akan melakukan pencarian berdasarkan nama outlet",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "tambahkan outlet untuk melihat harga outlet tertentu",
+                        "name": "outlet",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dto.OutletModel"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Menambahkan product sesuai dengan ID merchant yang melekat di user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "create product for merchant user",
+                "operationId": "product-create",
+                "parameters": [
+                    {
+                        "description": "Body raw JSON",
+                        "name": "ReqBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/wrap.RespMsgExample"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/products-image/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "menambahkan foto pada product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "menambahkan foto pada product",
+                "operationId": "product-upload-photo",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "file gambar",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ProductModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "menampilkan product berdasarkan userID, query outlet untuk mendapatkan harga custom pada outlet tertentu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "get product by ID",
+                "operationId": "product-get",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Outlet Price",
+                        "name": "outlet",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ProductModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "melakukan perubahan data pada product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "edit product",
+                "operationId": "product-edit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Body raw JSON",
+                        "name": "ReqBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductEditRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.OutletModel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "menghapus product berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "delete product by ID",
+                "operationId": "product-delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/wrap.RespMsgExample"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/profile": {
             "get": {
                 "security": [
@@ -1144,6 +1679,94 @@ var doc = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/dto.UserRefreshTokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample400"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/definitions/wrap.ErrorExample500"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/set-price/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "menambahkan harga custom product pada outlet tertentu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "menambahkan harga custom",
+                "operationId": "product-set-price",
+                "parameters": [
+                    {
+                        "description": "Body raw JSON",
+                        "name": "ReqBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ProductPriceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/wrap.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.OutletModel"
                                         }
                                     }
                                 }
@@ -1744,6 +2367,123 @@ var doc = `{
                 "updated_at": {
                     "type": "integer",
                     "example": 1631341964
+                }
+            }
+        },
+        "dto.ProductCreateRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "SKU",
+                    "type": "string",
+                    "example": "CAT-20"
+                },
+                "master_buy_price": {
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "master_sell_price": {
+                    "type": "integer",
+                    "example": 1050000
+                },
+                "name": {
+                    "type": "string",
+                    "example": "JAM TANGAN"
+                }
+            }
+        },
+        "dto.ProductEditRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "SKU",
+                    "type": "string",
+                    "example": "CAT-20"
+                },
+                "master_buy_price": {
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "master_sell_price": {
+                    "type": "integer",
+                    "example": 1050000
+                },
+                "name": {
+                    "type": "string",
+                    "example": "JAM TANGAN"
+                }
+            }
+        },
+        "dto.ProductModel": {
+            "type": "object",
+            "properties": {
+                "buy_price": {
+                    "description": "berasal dari table lain",
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "code": {
+                    "description": "SKU",
+                    "type": "string",
+                    "example": "CAT-20"
+                },
+                "created_at": {
+                    "type": "integer",
+                    "example": 1631341964
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "image": {
+                    "type": "string",
+                    "example": "image/products/121634211915.jpg"
+                },
+                "master_buy_price": {
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "master_sell_price": {
+                    "type": "integer",
+                    "example": 1050000
+                },
+                "merchant_id": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "name": {
+                    "type": "string",
+                    "example": "JAM TANGAN"
+                },
+                "sell_price": {
+                    "description": "berasal dari table lain",
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "updated_at": {
+                    "type": "integer",
+                    "example": 1631341964
+                }
+            }
+        },
+        "dto.ProductPriceRequest": {
+            "type": "object",
+            "properties": {
+                "buy_price": {
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "outlet_id": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "sell_price": {
+                    "type": "integer",
+                    "example": 1050000
                 }
             }
         },
