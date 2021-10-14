@@ -7,10 +7,10 @@ import (
 )
 
 type Merchant struct {
-	Id           int    `json:"id"`
-	MerchantName string `json:"merchant_name"`
-	CreatedAt    int64  `json:"created_at"`
-	UpdatedAt    int64  `json:"updated_at"`
+	Id           int    `json:"id" example:"1"`
+	MerchantName string `json:"merchant_name" example:"KUKUS-TOKO"`
+	CreatedAt    int64  `json:"created_at" example:"1631341964"`
+	UpdatedAt    int64  `json:"updated_at" example:"1631341964"`
 }
 
 func (m *Merchant) Prepare() {
@@ -24,11 +24,11 @@ func (m *Merchant) Prepare() {
 }
 
 type MerchantCreateReq struct {
-	MerchantName    string `json:"merchant_name"`
-	Description     string `json:"description"`
-	OwnerEmail      string `json:"owner_email"`
-	OwnerName       string `json:"owner_name"`
-	DefaultPassword string `json:"default_password"`
+	MerchantName    string `json:"merchant_name" example:"KUKUS-TOKO"`
+	Description     string `json:"description" example:"penjualan barang barang tidak kasat mata"`
+	OwnerEmail      string `json:"owner_email" example:"example@gmail.com"`
+	OwnerName       string `json:"owner_name" example:"MUCHLIS"`
+	DefaultPassword string `json:"default_password" example:"secret"`
 }
 
 func (m MerchantCreateReq) Validate() error {
@@ -44,15 +44,15 @@ func (m MerchantCreateReq) Validate() error {
 }
 
 type MerchantCreateRes struct {
-	MerchantID   int    `json:"merchant_id"`
-	MerchantName string `json:"merchant_name"`
-	OwnerEmail   string `json:"owner_email"`
-	OwnerName    string `json:"owner_name"`
+	MerchantID   int    `json:"merchant_id" example:"1"`
+	MerchantName string `json:"merchant_name" example:"KUKUS-TOKO"`
+	OwnerEmail   string `json:"owner_email" example:"example@gmail.com"`
+	OwnerName    string `json:"owner_name" example:"MUCHLIS"`
 }
 
 type MerchantEditReq struct {
 	Id           int    `json:"-"`
-	MerchantName string `json:"merchant_name"`
+	MerchantName string `json:"merchant_name" example:"KUKUS TOKO"`
 }
 
 func (m MerchantEditReq) Validate() error {

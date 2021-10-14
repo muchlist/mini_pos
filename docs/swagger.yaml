@@ -1,5 +1,59 @@
 basePath: /api/v1
 definitions:
+  dto.Merchant:
+    properties:
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.MerchantCreateReq:
+    properties:
+      default_password:
+        example: secret
+        type: string
+      description:
+        example: penjualan barang barang tidak kasat mata
+        type: string
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      owner_email:
+        example: example@gmail.com
+        type: string
+      owner_name:
+        example: MUCHLIS
+        type: string
+    type: object
+  dto.MerchantCreateRes:
+    properties:
+      merchant_id:
+        example: 1
+        type: integer
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      owner_email:
+        example: example@gmail.com
+        type: string
+      owner_name:
+        example: MUCHLIS
+        type: string
+    type: object
+  dto.MerchantEditReq:
+    properties:
+      merchant_name:
+        example: KUKUS TOKO
+        type: string
+    type: object
   dto.UserEditRequest:
     properties:
       def_outlet:
@@ -228,6 +282,250 @@ paths:
       summary: login
       tags:
       - Access
+  /merchant:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar merchant
+      operationId: merchant-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          merchant
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.Merchant'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find merchant
+      tags:
+      - Merchant
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan merchant juga akan membuat user dengan role owner
+      operationId: merchant-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MerchantCreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.MerchantCreateRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create merchant and owner user
+      tags:
+      - Merchant
+  /merchant/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus merchant berdasarkan ID
+      operationId: merchant-delete
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete merchant by ID
+      tags:
+      - Merchant
+    get:
+      consumes:
+      - application/json
+      description: menampilkan user berdasarkan userID
+      operationId: merchant-get
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Merchant'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get user by ID
+      tags:
+      - Merchant
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada merchant
+      operationId: merchant-edit
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MerchantEditReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Merchant'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit merchant
+      tags:
+      - Merchant
   /profile:
     get:
       consumes:

@@ -11,6 +11,13 @@ file ini akan diload ketika program dijalankan.
 Aplikasi memerlukan database `PostgreSQL` dengan nama database `minipos`.  
 adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya.
 
+## Swagger
+untuk memperbarui doc swagger bisa menggunakan `swag init -g app/app.go` . Juga lakukan ini apabila isi folder /docs kosong.  
+Swagger Doc bisa diakses melalui `http://127.0.0.1:3500/swagger/index.html`.
+
+Gunakan token `Bearer<spasi><Token tanpa petik>` pada menu Authorize yang bisa dibuka dengan mengklik tombol hijau di kanan atas menu swager.
+
+
 ## Endpoint
 postman config disertakan pada file `doc/minipos.postman_collection.json`. jika diberikan waktu tambahan saya bisa saja membuatkan swagger doc.
 
@@ -58,11 +65,6 @@ postman config disertakan pada file `doc/minipos.postman_collection.json`. jika 
 	*/
 ```
 
-## Swagger
-untuk memperbarui doc swagger bisa menggunakan `swag init -g app/app.go` . Juga lakukan ini apabila isi folder /docs kosong.  
-Swagger Doc bisa diakses melalui `http://127.0.0.1:3500/swagger/index.html`.
-
-Gunakan token `Bearer<spasi><Token tanpa petik>` pada menu Authorize yang bisa dibuka dengan mengklik tombol hijau di kanan atas menu swager.
 
 ## Memulai pengujian  <========================
 1. Dimulai dari Merhcant endpoint, Pembuatan merchant akan membuat otomatis 1 user dengan role owner.  adapun passwordnya kita yang menentukan karena tidak ada verifikasi email pada aplikasi ini. gunakan email masukan dan password masukan sebagai data untuk login.
