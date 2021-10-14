@@ -6,12 +6,14 @@ import (
 	"github.com/muchlist/mini_pos/configs/roles"
 	"github.com/muchlist/mini_pos/dao/merchant_dao"
 	"github.com/muchlist/mini_pos/dao/outlet_dao"
+	"github.com/muchlist/mini_pos/dao/product_dao"
 	"github.com/muchlist/mini_pos/dao/user_dao"
 	"github.com/muchlist/mini_pos/db"
 	"github.com/muchlist/mini_pos/handler"
 	"github.com/muchlist/mini_pos/middleware"
 	"github.com/muchlist/mini_pos/service/merchant_serv"
 	"github.com/muchlist/mini_pos/service/outlet_serv"
+	"github.com/muchlist/mini_pos/service/product_serv"
 	"github.com/muchlist/mini_pos/service/user_serv"
 	"github.com/muchlist/mini_pos/utils/mcrypt"
 	"github.com/muchlist/mini_pos/utils/mjwt"
@@ -37,6 +39,11 @@ func prepareEndPoint(app *fiber.App) {
 	outletDao := outlet_dao.New(db.DB)
 	outletService := outlet_serv.NewOutletService(outletDao)
 	outletHandler := handler.NewOutletHandler(outletService)
+
+	// Product Domain
+	productDao := product_dao.New(db.DB)
+	productService := product_serv.NewProductService(productDao)
+	productHandler := handler.NewProductHandler(productService)
 
 	app.Use(logger.New())
 
@@ -67,4 +74,12 @@ func prepareEndPoint(app *fiber.App) {
 	api.Post("/outlets", middleware.NormalAuth(roles.RoleOwner), outletHandler.CreateOutlet)
 	api.Put("/outlets/:id", middleware.NormalAuth(roles.RoleOwner), outletHandler.Edit)
 	api.Delete("/outlets/:id", middleware.NormalAuth(roles.RoleOwner), outletHandler.Delete)
+
+	// Product Endpont
+	api.Get("/products/:id", middleware.NormalAuth(), productHandler.Get)
+	api.Get("/products", middleware.NormalAuth(), productHandler.Find)
+	api.Post("/products", middleware.NormalAuth(roles.RoleOwner), productHandler.CreateProduct)
+	api.Put("/products/:id", middleware.NormalAuth(roles.RoleOwner), productHandler.Edit)
+	api.Delete("/products/:id", middleware.NormalAuth(roles.RoleOwner), productHandler.Delete)
+
 }
