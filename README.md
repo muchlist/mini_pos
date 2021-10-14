@@ -11,6 +11,12 @@ file ini akan diload ketika program dijalankan.
 Aplikasi memerlukan database `PostgreSQL` dengan nama database `minipos`.  
 adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya.
 
+## Menjalankan Aplikasi
+1. jalankan perintah `go mod tidy` untuk mendownload dependency
+2. jalankan `go run main.go` untuk mulai menjalankan aplikasi semasa pengujian
+3. buka browser dan jelajah `http://127.0.0.1:3500/swagger/index.html` untuk menjalankan dokumentasi rest-api
+4. atau import file hasil export postman di folder /doc
+
 ## Swagger
 untuk memperbarui doc swagger bisa menggunakan `swag init -g app/app.go` . Juga lakukan ini apabila isi folder /docs kosong.  
 Swagger Doc bisa diakses melalui `http://127.0.0.1:3500/swagger/index.html`.
@@ -19,7 +25,7 @@ Gunakan token `Bearer<spasi><Token tanpa petik>` pada menu Authorize yang bisa d
 
 
 ## Endpoint
-postman config disertakan pada file `doc/minipos.postman_collection.json`. jika diberikan waktu tambahan saya bisa saja membuatkan swagger doc.
+postman config disertakan pada file `doc/minipos.postman_collection.json`.
 
 ### Daftar lengkap map url
 ```
