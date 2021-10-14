@@ -12,7 +12,7 @@ Aplikasi memerlukan database `PostgreSQL` dengan nama database `minipos`.
 adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya.
 
 ## Endpoint
-postman config disertakan pada file `doc/minipos.postman_collection.json`. sedikit sample akan ditulis dibawah ini :
+postman config disertakan pada file `doc/minipos.postman_collection.json`. jika diberikan waktu tambahan, saya memungkinkan saya bisa saja membuatkan swagger doc, namun memerlukan waktu tambahan:
 
 ### Daftar lengkap map url
 ```
