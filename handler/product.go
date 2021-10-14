@@ -215,6 +215,14 @@ func (u *ProductHandler) SetCustomPrice(c *fiber.Ctx) error {
 }
 
 func (u *ProductHandler) Get(c *fiber.Ctx) error {
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
 	productID, err := c.ParamsInt("id")
 	if err != nil {
 		apiErr := rest_err.NewBadRequestError("kesalahan input, id harus berupa angka")
@@ -225,7 +233,7 @@ func (u *ProductHandler) Get(c *fiber.Ctx) error {
 	}
 	outletID := sfunc.StrToInt(c.Query("outlet"), 0)
 
-	product, apiErr := u.service.Get(c.Context(), productID, outletID)
+	product, apiErr := u.service.Get(c.Context(), *claims, productID, outletID)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
@@ -240,12 +248,26 @@ func (u *ProductHandler) Get(c *fiber.Ctx) error {
 }
 
 func (u *ProductHandler) Find(c *fiber.Ctx) error {
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
+
 	limit := sfunc.StrToInt(c.Query("limit"), 10)
 	offset := sfunc.StrToInt(c.Query("offset"), 0)
 	search := c.Query("search")
 	outlet := sfunc.StrToInt(c.Query("outlet"), 0)
 
-	productList, apiErr := u.service.FindProducts(c.Context(), search, limit, offset, outlet)
+	productList, apiErr := u.service.FindProducts(c.Context(), *claims, product_serv.FindProductsParams{
+		Search:         search,
+		Limit:          limit,
+		Offset:         offset,
+		OutletSpecific: outlet,
+	})
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
@@ -264,7 +286,14 @@ func (u *ProductHandler) Find(c *fiber.Ctx) error {
 
 // UploadImage melakukan pengambilan file menggunakan form "image" mengecek ekstensi dan memasukkannya ke database
 func (u *ProductHandler) UploadImage(c *fiber.Ctx) error {
-	claims := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
 	id, err := c.ParamsInt("id")
 	if err != nil {
 		apiErr := rest_err.NewBadRequestError("kesalahan input, id harus berupa angka")
@@ -275,7 +304,7 @@ func (u *ProductHandler) UploadImage(c *fiber.Ctx) error {
 	}
 
 	// cek apakah ID cctv && branch ada
-	_, apiErr := u.service.Get(c.Context(), id, 0)
+	_, apiErr := u.service.Get(c.Context(), *claims, id, 0)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(fiber.Map{"error": apiErr, "data": nil})
 	}

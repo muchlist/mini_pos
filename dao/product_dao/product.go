@@ -163,7 +163,7 @@ func (p *productDao) SetImagePath(ctx context.Context, productID int, path strin
 	return &res, nil
 }
 
-func (p *productDao) Get(ctx context.Context, id int) (*dto.ProductModel, rest_err.APIError) {
+func (p *productDao) Get(ctx context.Context, id int, merchantFilter int) (*dto.ProductModel, rest_err.APIError) {
 	sqlStatement, args, err := p.sb.Select(
 		keyProID,
 		keyProMerchID,
@@ -176,7 +176,10 @@ func (p *productDao) Get(ctx context.Context, id int) (*dto.ProductModel, rest_e
 		keyUpdatedAt,
 	).
 		From(keyProductTable).
-		Where(squirrel.Eq{keyProID: id}).
+		Where(squirrel.And{
+			squirrel.Eq{keyProID: id},
+			squirrel.Eq{keyProMerchID: merchantFilter},
+		}).
 		ToSql()
 
 	if err != nil {
@@ -254,7 +257,7 @@ type FindParams struct {
 }
 
 // FindWithPagination example : ?limit=10&offset=10
-func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams) ([]dto.ProductModel, rest_err.APIError) {
+func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams, merchantFilter int) ([]dto.ProductModel, rest_err.APIError) {
 
 	// ------------------------------------------------------------------------- find user
 	sqlFrom := p.sb.Select(
@@ -272,7 +275,12 @@ func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams) ([]
 	// where
 	if len(opt.Search) > 0 {
 		// search
-		sqlFrom = sqlFrom.Where(squirrel.ILike{keyProName: fmt.Sprint("%", opt.Search, "%")})
+		sqlFrom = sqlFrom.Where(squirrel.And{
+			squirrel.ILike{keyProName: fmt.Sprint("%", opt.Search, "%")},
+			squirrel.Eq{keyProMerchID: merchantFilter},
+		})
+	} else {
+		sqlFrom = sqlFrom.Where(squirrel.Eq{keyProMerchID: merchantFilter})
 	}
 
 	sqlStatement, args, err := sqlFrom.OrderBy(keyProName + " ASC").
