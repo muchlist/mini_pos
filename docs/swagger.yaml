@@ -54,6 +54,45 @@ definitions:
         example: KUKUS TOKO
         type: string
     type: object
+  dto.OutletCreateRequest:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      outlet_name:
+        example: BLOK B
+        type: string
+    type: object
+  dto.OutletEditRequest:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      outlet_name:
+        example: BLOK B
+        type: string
+    type: object
+  dto.OutletModel:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      merchant_id:
+        example: 1
+        type: integer
+      outlet_name:
+        example: BLOK B
+        type: string
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
   dto.UserEditRequest:
     properties:
       def_outlet:
@@ -236,6 +275,47 @@ info:
   title: mini_pos API
   version: "1.0"
 paths:
+  /current-outlet:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan outlet berdasarkan user yang saat ini login
+      operationId: outlet-curent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get outlet by current user
+      tags:
+      - Outlet
   /login:
     post:
       consumes:
@@ -526,6 +606,250 @@ paths:
       summary: edit merchant
       tags:
       - Merchant
+  /outlets:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar outlet
+      operationId: outlet-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          outlet
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.OutletModel'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find outlet
+      tags:
+      - Access
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan outlets sesuai dengan ID merchant yang melekat di user
+      operationId: outlet-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OutletCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/wrap.RespMsgExample'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create outlet for merchant user
+      tags:
+      - Outlet
+  /outlets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus outlet berdasarkan ID
+      operationId: outlet-delete
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete outlet by ID
+      tags:
+      - Outlet
+    get:
+      consumes:
+      - application/json
+      description: menampilkan outlet berdasarkan userID
+      operationId: outlet-get
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get outlet by ID
+      tags:
+      - Outlet
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada outlet
+      operationId: outlet-edit
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OutletEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit outlet
+      tags:
+      - Outlet
   /profile:
     get:
       consumes:
