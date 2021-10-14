@@ -63,7 +63,7 @@ postman config disertakan pada file `doc/minipos.postman_collection.json`. sedik
 2. Ketika mulai login, user akan mendapatkan token JWT yang harus dibawa pada header dengan format Bearer. semua endpoint yang memiliki `middleware.NormalAuth()` akan mengecek keabsahan token dan role yang diperlukan. `middleware.FreshAuth()` memerlukan Token yang fresh (bukan hasil refresh token) 
 3. Buatlah satu buah outlet, outlet tersebut ditandai sebagai milik merchant yang sesuai dengan akun dengan role owner yang login.
 4. Product memiliki data master harga yang agak unik perlakuannya. Menambahkan produk akan menambahkan master produk sesuai merhcant user.
-5. User dapat menambahkan custom harga produk untuk outlet tertentu 
+5. User dapat menambahkan custom harga produk untuk outlet tertentu. untuk mendapatkan harga sesuai outlet tertentu, ketika melakukan get product harus menyertakan query `<url>?outlet=nomor_outlet`. contoh `{{url}}/api/v1/products/6?outlet=2`.  begitu juga dengan mendapatkan list product `{{url}}/api/v1/products?search=&outlet=2`. tanpa query outlet maka data master harga yang akan ditampilkan.
 
 
 ## Kontrak Struktur
