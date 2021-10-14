@@ -101,7 +101,7 @@ func (o *outletDao) Delete(ctx context.Context, id int, filterMerchant int) rest
 	res, err := db.DB.Exec(ctx, sqlStatement, args...)
 	if err != nil {
 		logger.Error("error saat delete outlet(Delete:0)", err)
-		return rest_err.NewInternalServerError("gagal saat penghapusan outlet", err)
+		return sql_err.ParseError(err)
 	}
 
 	if res.RowsAffected() == 0 {
@@ -126,7 +126,7 @@ func (o *outletDao) Get(ctx context.Context, id int) (*dto.OutletModel, rest_err
 	err = db.DB.QueryRow(ctx, sqlStatement, args...).
 		Scan(&res.ID, &res.MerchantID, &res.OutletName, &res.Address, &res.CreatedAt, &res.UpdatedAt)
 	if err != nil {
-		return nil, rest_err.NewInternalServerError("gagal mendapatkan data outlet", err)
+		return nil, sql_err.ParseError(err)
 	}
 
 	return &res, nil

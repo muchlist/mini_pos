@@ -186,7 +186,7 @@ func (u userDao) GetByID(ctx context.Context, id int) (*dto.UserModel, rest_err.
 		Scan(&user.ID, &user.MerchantID, &user.DefOutlet, &user.Name, &user.Email, &user.CreatedAt, &user.UpdatedAt, &user.Role)
 	if err != nil {
 		logger.Error("error saat QueryRow users(Get:0)", err)
-		return nil, rest_err.NewInternalServerError("gagal mendapatkan user", err)
+		return nil, sql_err.ParseError(err)
 	}
 
 	return &user, nil
@@ -215,7 +215,7 @@ func (u userDao) GetByEmail(ctx context.Context, email string) (*dto.UserModel, 
 		Scan(&user.ID, &user.MerchantID, &user.DefOutlet, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Role)
 	if err != nil {
 		logger.Error("error saat QueryRow users(GetByEmail:1)", err)
-		return nil, rest_err.NewInternalServerError("gagal mendapatkan user", err)
+		return nil, sql_err.ParseError(err)
 	}
 
 	return &user, nil
