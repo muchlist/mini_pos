@@ -32,7 +32,6 @@ const (
 	keyProductPriceBuy       = "buy_price"
 	keyProductPriceSell      = "sell_price"
 	keyProductPriceOutletID  = "outlet_id"
-	keyProductPriceUpdatedAt = "updated_at"
 )
 
 type ProductDaoAssumer interface {
@@ -407,7 +406,7 @@ func (p *productDao) GetPriceDataWithID(ctx context.Context, priceID string) (*d
 
 	var res dto.ProductPriceModel
 	err = db.DB.QueryRow(ctx, sqlStatement, args...).
-		Scan(&res.ID, &res.ID, &res.ProductID, &res.OutletID, &res.BuyPrice, &res.SellPrice, &res.UpdatedAt)
+		Scan(&res.ID, &res.ProductID, &res.OutletID, &res.BuyPrice, &res.SellPrice, &res.UpdatedAt)
 	if err != nil {
 		logger.Error("error saat queryRow(GetPriceWithID:0)", err)
 		return nil, sql_err.ParseError(err)

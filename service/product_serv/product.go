@@ -109,7 +109,6 @@ func (u *productService) SetCustomPrice(ctx context.Context, claims mjwt.CustomC
 
 	// periksa apakah price id tersebut exist
 	existPrice, _ := u.dao.GetPriceDataWithID(ctx, idGenerated)
-
 	var productResult *dto.ProductModel
 	if existPrice != nil {
 		// datanya ada, perlu dilakukan edit
