@@ -34,20 +34,6 @@ const (
 	keyProductPriceOutletID  = "outlet_id"
 )
 
-type ProductDaoAssumer interface {
-	Insert(ctx context.Context, input dto.ProductModel) (int, rest_err.APIError)
-	Edit(ctx context.Context, input dto.ProductEditModel) (*dto.ProductModel, rest_err.APIError)
-	Delete(ctx context.Context, id int, filterMerchant int) rest_err.APIError
-	EditCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError)
-	InsertCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError)
-	SetImagePath(ctx context.Context, productID int, path string) (*dto.ProductModel, rest_err.APIError)
-	Get(ctx context.Context, id int) (*dto.ProductModel, rest_err.APIError)
-	GetWithCustomPriceOutlet(ctx context.Context, id int, outletID int) (*dto.ProductModel, rest_err.APIError)
-	GetPriceDataWithID(ctx context.Context, priceID string) (*dto.ProductPriceModel, rest_err.APIError)
-	FindWithPagination(ctx context.Context, opt FindParams) ([]dto.ProductModel, rest_err.APIError)
-	FindCustomPriceOutlet(ctx context.Context, outletID int) ([]dto.ProductPriceModel, rest_err.APIError)
-}
-
 type productDao struct {
 	db *pgxpool.Pool
 	sb squirrel.StatementBuilderType
