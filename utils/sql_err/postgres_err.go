@@ -21,6 +21,8 @@ func ParseError(err error) rest_err.APIError {
 			return rest_err.NewBadRequestError("input mengalami konflik dengan data existing")
 		case pgerrcode.ForeignKeyViolation:
 			return rest_err.NewBadRequestError("parent id tidak ditemukan")
+		case pgerrcode.InvalidTextRepresentation:
+			return rest_err.NewBadRequestError("invalid text enum")
 		case pgerrcode.UndefinedColumn:
 			return rest_err.NewInternalServerError("galat pada query database, column tidak tersedia", err)
 		}
