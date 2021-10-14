@@ -9,7 +9,7 @@ file ini akan diload ketika program dijalankan.
 
 ## Database
 Aplikasi memerlukan database `PostgreSQL` dengan nama database `minipos`.  
-adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya.
+adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya pada file `doc/minipos_erd.pdf`.
 
 ## Menjalankan Aplikasi
 1. jalankan perintah `go mod tidy` untuk mendownload dependency
