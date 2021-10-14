@@ -50,3 +50,8 @@ func C(text string) string {
 func Dot(table, column string) string {
 	return fmt.Sprintf("%s.%s", table, column)
 }
+
+// CoalesceInt Coalesce(null,default)
+func CoalesceInt(text string, def int) string {
+	return fmt.Sprintf("Coalesce(%s,%d)", text, def)
+}
