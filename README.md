@@ -59,7 +59,7 @@ postman config disertakan pada file `doc/minipos.postman_collection.json`. sedik
 ```
 
 ## Memulai pengujian  <========================
-1. Dimulai dari Merhcant endpoint, Pembuatan merchant akan membuat otomatis 1 user dengan role owner.  adapun passwordnya kita yang menentukan karena tidak ada verifikasi email pada aplikasi ini.
+1. Dimulai dari Merhcant endpoint, Pembuatan merchant akan membuat otomatis 1 user dengan role owner.  adapun passwordnya kita yang menentukan karena tidak ada verifikasi email pada aplikasi ini. gunakan email masukan dan password masukan sebagai data untuk login.
 2. Ketika mulai login, user akan mendapatkan token JWT yang harus dibawa pada header dengan format Bearer. semua endpoint yang memiliki `middleware.NormalAuth()` akan mengecek keabsahan token dan role yang diperlukan. `middleware.FreshAuth()` memerlukan Token yang fresh (bukan hasil refresh token) 
 3. Buatlah satu buah outlet, outlet tersebut ditandai sebagai milik merchant yang sesuai dengan akun dengan role owner yang login.
 4. Product memiliki data master harga yang agak unik perlakuannya. Menambahkan produk akan menambahkan master produk sesuai merhcant user.
