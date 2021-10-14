@@ -73,13 +73,13 @@ func (u UserEditRequest) Validate() error {
 }
 
 type UserEditModel struct {
-	WhereID         int             `json:"id"`
-	WhereMerchantID int             `json:"merchant_id"`
-	Email           LowercaseString `json:"email" `
-	Name            UppercaseString `json:"name"`
-	Role            LowercaseString `json:"role"`
-	UpdatedAt       int64           `json:"updated_at"`
-	DefOutlet       int             `json:"def_outlet"`
+	WhereID         int
+	WhereMerchantID int
+	Email           LowercaseString
+	Name            UppercaseString
+	Role            LowercaseString
+	UpdatedAt       int64
+	DefOutlet       int
 }
 
 // UserLoginResponse balikan user ketika sukses login dengan tambahan AccessToken

@@ -45,7 +45,7 @@ func prepareEndPoint(app *fiber.App) {
 
 	// USER Endpont
 	api.Get("/users/:id", userHandler.Get)
-	api.Get("/users", middleware.NormalAuth(), userHandler.Find)
+	api.Get("/users", userHandler.Find)
 	api.Post("/login", userHandler.Login)
 	api.Post("/refresh", userHandler.RefreshToken)
 	api.Get("/profile", middleware.NormalAuth(), userHandler.GetProfile)
