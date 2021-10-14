@@ -159,6 +159,14 @@ func (p *productDao) Get(ctx context.Context, id int) (*dto.ProductModel, rest_e
 		return nil, sql_err.ParseError(err)
 	}
 
+	// set price to master if 0
+	if res.BuyPrice == 0 {
+		res.BuyPrice = res.MasterBuyPrice
+	}
+	if res.SellPrice == 0 {
+		res.SellPrice = res.MasterSellPrice
+	}
+
 	return &res, nil
 }
 
@@ -190,10 +198,18 @@ func (p *productDao) GetWithCustomPriceOutlet(ctx context.Context, id int, outle
 
 	var res dto.ProductModel
 	err = db.DB.QueryRow(ctx, sqlStatement, args...).
-		Scan(&res.ID, &res.MerchantID, &res.Code, &res.Name, &res.MasterBuyPrice, &res.MasterSellPrice, &res.Image, &res.CreatedAt, &res.UpdatedAt, &res.CustomBuyPrice, &res.CustomSellPrice)
+		Scan(&res.ID, &res.MerchantID, &res.Code, &res.Name, &res.MasterBuyPrice, &res.MasterSellPrice, &res.Image, &res.CreatedAt, &res.UpdatedAt, &res.BuyPrice, &res.SellPrice)
 	if err != nil {
 		logger.Error("error saat get product(GetWithCustomPriceOutlet:0)", err)
 		return nil, sql_err.ParseError(err)
+	}
+
+	// set price to master if 0
+	if res.BuyPrice == 0 {
+		res.BuyPrice = res.MasterBuyPrice
+	}
+	if res.SellPrice == 0 {
+		res.SellPrice = res.MasterSellPrice
 	}
 
 	return &res, nil
@@ -237,7 +253,7 @@ func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams) ([]
 	}
 	rows, err := db.DB.Query(ctx, sqlStatement, args...)
 	if err != nil {
-		logger.Error("error saat get product(FindWithPagination:0)", err)
+		logger.Error("error saat query product(FindWithPagination:0)", err)
 		return nil, rest_err.NewInternalServerError("gagal mendapatkan daftar product", err)
 	}
 	defer rows.Close()
@@ -247,7 +263,16 @@ func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams) ([]
 		product := dto.ProductModel{}
 		err := rows.Scan(&product.ID, &product.MerchantID, &product.Code, &product.Name, &product.MasterBuyPrice, &product.MasterSellPrice, &product.Image, &product.CreatedAt, &product.UpdatedAt)
 		if err != nil {
+			logger.Error("error saat parsing product(FindWithPagination:1)", err)
 			return nil, sql_err.ParseError(err)
+		}
+
+		// set price to master if 0
+		if product.BuyPrice == 0 {
+			product.BuyPrice = product.MasterBuyPrice
+		}
+		if product.SellPrice == 0 {
+			product.SellPrice = product.MasterSellPrice
 		}
 		products = append(products, product)
 	}

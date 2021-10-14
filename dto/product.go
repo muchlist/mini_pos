@@ -9,8 +9,8 @@ type ProductModel struct {
 	Name            UppercaseString `json:"name"`
 	MasterBuyPrice  int             `json:"master_buy_price"`
 	MasterSellPrice int             `json:"master_sell_price"`
-	CustomBuyPrice  int             `json:"custom_buy_price"`  // berasal dari table lain
-	CustomSellPrice int             `json:"custom_sell_price"` // berasal dari table lain
+	BuyPrice        int             `json:"buy_price"`  // berasal dari table lain
+	SellPrice       int             `json:"sell_price"` // berasal dari table lain
 	Image           string          `json:"image"`
 	CreatedAt       int64           `json:"created_at"`
 	UpdatedAt       int64           `json:"updated_at"`

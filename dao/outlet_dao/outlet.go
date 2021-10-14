@@ -126,6 +126,7 @@ func (o *outletDao) Get(ctx context.Context, id int) (*dto.OutletModel, rest_err
 	err = db.DB.QueryRow(ctx, sqlStatement, args...).
 		Scan(&res.ID, &res.MerchantID, &res.OutletName, &res.Address, &res.CreatedAt, &res.UpdatedAt)
 	if err != nil {
+		logger.Error("error saat query outlet(Get:0)", err)
 		return nil, sql_err.ParseError(err)
 	}
 
@@ -161,6 +162,7 @@ func (o *outletDao) FindWithPagination(ctx context.Context, opt FindParams) ([]d
 	}
 	rows, err := db.DB.Query(ctx, sqlStatement, args...)
 	if err != nil {
+		logger.Error("error saat query outlet(FindWithPagination:0)", err)
 		return nil, rest_err.NewInternalServerError("gagal mendapatkan daftar outlet", err)
 	}
 	defer rows.Close()
@@ -170,6 +172,7 @@ func (o *outletDao) FindWithPagination(ctx context.Context, opt FindParams) ([]d
 		outlet := dto.OutletModel{}
 		err := rows.Scan(&outlet.ID, &outlet.MerchantID, &outlet.OutletName, &outlet.Address, &outlet.CreatedAt, &outlet.UpdatedAt)
 		if err != nil {
+			logger.Error("error saat parsing outlet(FindWithPagination:1)", err)
 			return nil, sql_err.ParseError(err)
 		}
 		outlets = append(outlets, outlet)
