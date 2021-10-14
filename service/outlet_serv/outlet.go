@@ -16,7 +16,7 @@ type OutletServiceAssumer interface {
 
 type OutletServiceReader interface {
 	GetOutletByID(ctx context.Context, outletID int) (*dto.OutletModel, rest_err.APIError)
-	FindOutlets(ctx context.Context, search string, limit int, offset int) ([]dto.OutletModel, rest_err.APIError)
+	FindOutlets(ctx context.Context, claims mjwt.CustomClaim, search string, limit int, offset int) ([]dto.OutletModel, rest_err.APIError)
 }
 
 type OutletServiceModifier interface {
@@ -86,12 +86,12 @@ func (u *outletService) GetOutletByID(ctx context.Context, outletID int) (*dto.O
 }
 
 // FindOutlets
-func (u *outletService) FindOutlets(ctx context.Context, search string, limit int, offset int) ([]dto.OutletModel, rest_err.APIError) {
+func (u *outletService) FindOutlets(ctx context.Context, claims mjwt.CustomClaim, search string, limit int, offset int) ([]dto.OutletModel, rest_err.APIError) {
 	outletList, err := u.dao.FindWithPagination(ctx, outlet_dao.FindParams{
 		Search: search,
 		Limit:  limit,
 		Offset: offset,
-	})
+	}, claims.Merchant)
 	if err != nil {
 		return nil, err
 	}

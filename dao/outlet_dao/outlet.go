@@ -140,7 +140,7 @@ type FindParams struct {
 }
 
 // FindWithPagination example : ?limit=10&offset=10
-func (o *outletDao) FindWithPagination(ctx context.Context, opt FindParams) ([]dto.OutletModel, rest_err.APIError) {
+func (o *outletDao) FindWithPagination(ctx context.Context, opt FindParams, merchantFilter int) ([]dto.OutletModel, rest_err.APIError) {
 
 	// ------------------------------------------------------------------------- find user
 	sqlFrom := o.sb.Select(keyID, keyMerchantID, keyOutletName, keyAddress, keyCreatedAt, keyUpdatedAt).
@@ -149,7 +149,12 @@ func (o *outletDao) FindWithPagination(ctx context.Context, opt FindParams) ([]d
 	// where
 	if len(opt.Search) > 0 {
 		// search
-		sqlFrom = sqlFrom.Where(squirrel.ILike{keyOutletName: fmt.Sprint("%", opt.Search, "%")})
+		sqlFrom = sqlFrom.Where(squirrel.And{
+			squirrel.ILike{keyOutletName: fmt.Sprint("%", opt.Search, "%")},
+			squirrel.Eq{keyMerchantID: merchantFilter},
+		})
+	} else {
+		sqlFrom = sqlFrom.Where(squirrel.Eq{keyMerchantID: merchantFilter})
 	}
 
 	sqlStatement, args, err := sqlFrom.OrderBy(keyID + " ASC").

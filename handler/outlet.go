@@ -193,11 +193,19 @@ func (u *OutletHandler) Get(c *fiber.Ctx) error {
 }
 
 func (u *OutletHandler) Find(c *fiber.Ctx) error {
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
 	limit := sfunc.StrToInt(c.Query("limit"), 10)
 	offset := sfunc.StrToInt(c.Query("offset"), 0)
 	search := c.Query("search")
 
-	outletList, apiErr := u.service.FindOutlets(c.Context(), search, limit, offset)
+	outletList, apiErr := u.service.FindOutlets(c.Context(), *claims, search, limit, offset)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
