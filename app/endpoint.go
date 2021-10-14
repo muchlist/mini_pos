@@ -47,6 +47,8 @@ func prepareEndPoint(app *fiber.App) {
 
 	app.Use(logger.New())
 
+	app.Static("/image/products", "./static/image/products")
+
 	// url mapping
 	api := app.Group("/api/v1")
 
@@ -81,5 +83,7 @@ func prepareEndPoint(app *fiber.App) {
 	api.Post("/products", middleware.NormalAuth(roles.RoleOwner), productHandler.CreateProduct)
 	api.Put("/products/:id", middleware.NormalAuth(roles.RoleOwner), productHandler.Edit)
 	api.Delete("/products/:id", middleware.NormalAuth(roles.RoleOwner), productHandler.Delete)
+	api.Post("/set-price", middleware.NormalAuth(roles.RoleOwner), productHandler.SetCustomPrice)
+	api.Post("/products-image/:id", middleware.NormalAuth(roles.RoleOwner), productHandler.UploadImage)
 
 }

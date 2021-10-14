@@ -27,19 +27,25 @@ const (
 	keyUpdatedAt    = "updated_at"
 
 	keyProductPriceTable     = "product_price"
-	keyProductPriceBuy       = "def_buy_price"
-	keyProductPriceSell      = "def_sell_price"
+	keyProductPriceProductID = "product_id"
+	keyProductPriceID        = "id"
+	keyProductPriceBuy       = "buy_price"
+	keyProductPriceSell      = "sell_price"
 	keyProductPriceOutletID  = "outlet_id"
-	keyProductPriceUpdatedAt = "updated_at"
 )
 
 type ProductDaoAssumer interface {
 	Insert(ctx context.Context, input dto.ProductModel) (int, rest_err.APIError)
 	Edit(ctx context.Context, input dto.ProductEditModel) (*dto.ProductModel, rest_err.APIError)
 	Delete(ctx context.Context, id int, filterMerchant int) rest_err.APIError
+	EditCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError)
+	InsertCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError)
+	SetImagePath(ctx context.Context, productID int, path string) (*dto.ProductModel, rest_err.APIError)
 	Get(ctx context.Context, id int) (*dto.ProductModel, rest_err.APIError)
 	GetWithCustomPriceOutlet(ctx context.Context, id int, outletID int) (*dto.ProductModel, rest_err.APIError)
+	GetPriceDataWithID(ctx context.Context, priceID string) (*dto.ProductPriceModel, rest_err.APIError)
 	FindWithPagination(ctx context.Context, opt FindParams) ([]dto.ProductModel, rest_err.APIError)
+	FindCustomPriceOutlet(ctx context.Context, outletID int) ([]dto.ProductPriceModel, rest_err.APIError)
 }
 
 type productDao struct {
@@ -103,6 +109,13 @@ func (p *productDao) Edit(ctx context.Context, input dto.ProductEditModel) (*dto
 	if err != nil {
 		return nil, sql_err.ParseError(err)
 	}
+	// set price to master if 0
+	if res.BuyPrice == 0 {
+		res.BuyPrice = res.MasterBuyPrice
+	}
+	if res.SellPrice == 0 {
+		res.SellPrice = res.MasterSellPrice
+	}
 
 	return &res, nil
 }
@@ -129,6 +142,39 @@ func (p *productDao) Delete(ctx context.Context, id int, filterMerchant int) res
 	}
 
 	return nil
+}
+
+func (p *productDao) SetImagePath(ctx context.Context, productID int, path string) (*dto.ProductModel, rest_err.APIError) {
+	timeNow := time.Now().Unix()
+	sqlStatement, args, err := p.sb.Update(keyProductTable).
+		SetMap(squirrel.Eq{
+			keyProImage:  path,
+			keyUpdatedAt: timeNow,
+		}).
+		Where(squirrel.Eq{keyProID: productID}).
+		Suffix(dao.Returning(keyProID, keyProMerchID, keyProCode, keyProName, keyProDefBuy, keyProDefSell, keyProImage, keyCreatedAt, keyUpdatedAt)).
+		ToSql()
+
+	if err != nil {
+		logger.Error("error saat edit product(SetImagePath:0)", err)
+		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
+	}
+
+	var res dto.ProductModel
+	err = p.db.QueryRow(ctx, sqlStatement, args...).
+		Scan(&res.ID, &res.MerchantID, &res.Code, &res.Name, &res.MasterBuyPrice, &res.MasterSellPrice, &res.Image, &res.CreatedAt, &res.UpdatedAt)
+	if err != nil {
+		return nil, sql_err.ParseError(err)
+	}
+	// set price to master if 0
+	if res.BuyPrice == 0 {
+		res.BuyPrice = res.MasterBuyPrice
+	}
+	if res.SellPrice == 0 {
+		res.SellPrice = res.MasterSellPrice
+	}
+
+	return &res, nil
 }
 
 func (p *productDao) Get(ctx context.Context, id int) (*dto.ProductModel, rest_err.APIError) {
@@ -185,7 +231,7 @@ func (p *productDao) GetWithCustomPriceOutlet(ctx context.Context, id int, outle
 		dao.CoalesceInt(dao.B(keyProductPriceSell), 0),
 	).
 		From(keyProductTable + " A").
-		LeftJoin(keyProductPriceBuy + " B ON A.id = B.product_id").
+		LeftJoin(keyProductPriceTable + " B ON A.id = B.product_id").
 		Where(squirrel.And{
 			squirrel.Eq{dao.A(keyProID): id},
 			squirrel.Eq{dao.B(keyProductPriceOutletID): outletID},
@@ -278,4 +324,134 @@ func (p *productDao) FindWithPagination(ctx context.Context, opt FindParams) ([]
 	}
 
 	return products, nil
+}
+
+func (p *productDao) InsertCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError) {
+	timeNow := time.Now().Unix()
+	// -------------------------------------------------------------- insert merchant data
+	sqlStatement, args, err := p.sb.Insert(keyProductPriceTable).
+		Columns(keyProductPriceID, keyProductPriceProductID, keyProductPriceOutletID, keyProductPriceBuy, keyProductPriceSell, keyUpdatedAt).
+		Values(input.ID, input.ProductID, input.OutletID, input.BuyPrice, input.SellPrice, timeNow).
+		Suffix(dao.Returning(keyProductPriceID)).
+		ToSql()
+	if err != nil {
+		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
+	}
+
+	var createdID string
+	err = p.db.QueryRow(ctx, sqlStatement, args...).Scan(&createdID)
+	if err != nil {
+		logger.Error("error saat queryRow product (InsertCustomPrice:0)", err)
+		return nil, sql_err.ParseError(err)
+	}
+
+	res, apiErr := p.GetWithCustomPriceOutlet(ctx, input.ProductID, input.OutletID)
+	if err != nil {
+		logger.Error("error saat GetWithCustomPriceOutlet (InsertCustomPrice:1)", err)
+		return nil, apiErr
+	}
+
+	return res, nil
+}
+
+func (p *productDao) EditCustomPrice(ctx context.Context, input dto.ProductPriceModel) (*dto.ProductModel, rest_err.APIError) {
+	timeNow := time.Now().Unix()
+	sqlStatement, args, err := p.sb.Update(keyProductPriceTable).
+		SetMap(squirrel.Eq{
+			keyProductPriceBuy:  input.BuyPrice,
+			keyProductPriceSell: input.SellPrice,
+			keyUpdatedAt:        timeNow,
+		}).
+		Where(squirrel.Eq{keyProductPriceID: input.ID}).
+		Suffix(dao.Returning(keyProductPriceID)).
+		ToSql()
+
+	if err != nil {
+		logger.Error("error saat edit product price(EditCustomPrice:0)", err)
+		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
+	}
+
+	var createdID string
+	err = p.db.QueryRow(ctx, sqlStatement, args...).Scan(&createdID)
+	if err != nil {
+		logger.Error("error saat queryRow product (EditCustomPrice:1)", err)
+		return nil, sql_err.ParseError(err)
+	}
+
+	res, apiErr := p.GetWithCustomPriceOutlet(ctx, input.ProductID, input.OutletID)
+	if err != nil {
+		logger.Error("error saat GetWithCustomPriceOutlet (EditCustomPrice:2)", err)
+		return nil, apiErr
+	}
+
+	return res, nil
+}
+
+func (p *productDao) GetPriceDataWithID(ctx context.Context, priceID string) (*dto.ProductPriceModel, rest_err.APIError) {
+	sqlStatement, args, err := p.sb.Select(
+		keyProductPriceID,
+		keyProductPriceProductID,
+		keyProductPriceOutletID,
+		keyProductPriceBuy,
+		keyProductPriceSell,
+		keyUpdatedAt,
+	).
+		From(keyProductPriceTable).
+		Where(squirrel.Eq{keyProID: priceID}).
+		ToSql()
+
+	if err != nil {
+		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
+	}
+
+	var res dto.ProductPriceModel
+	err = db.DB.QueryRow(ctx, sqlStatement, args...).
+		Scan(&res.ID, &res.ProductID, &res.OutletID, &res.BuyPrice, &res.SellPrice, &res.UpdatedAt)
+	if err != nil {
+		logger.Error("error saat queryRow(GetPriceWithID:0)", err)
+		return nil, sql_err.ParseError(err)
+	}
+
+	return &res, nil
+}
+
+func (p *productDao) FindCustomPriceOutlet(ctx context.Context, outletID int) ([]dto.ProductPriceModel, rest_err.APIError) {
+
+	// ------------------------------------------------------------------------- find user
+	sqlStatement, args, err := p.sb.Select(
+		keyProductPriceID,
+		keyProductPriceProductID,
+		keyProductPriceOutletID,
+		keyProductPriceBuy,
+		keyProductPriceSell,
+		keyUpdatedAt,
+	).
+		From(keyProductPriceTable).
+		Where(squirrel.Eq{keyProductPriceOutletID: outletID}).
+		ToSql()
+
+	if err != nil {
+		return nil, rest_err.NewInternalServerError(dao.ErrSqlBuilder, err)
+	}
+
+	rows, err := db.DB.Query(ctx, sqlStatement, args...)
+	if err != nil {
+		logger.Error("error saat query custom price(FindCustomPriceOutlet:0)", err)
+		return nil, rest_err.NewInternalServerError("gagal mendapatkan daftar custom price", err)
+	}
+	defer rows.Close()
+
+	customPrices := make([]dto.ProductPriceModel, 0)
+	for rows.Next() {
+		price := dto.ProductPriceModel{}
+		err := rows.Scan(&price.ID, &price.ProductID, &price.OutletID, &price.BuyPrice, &price.SellPrice, &price.UpdatedAt)
+		if err != nil {
+			logger.Error("error saat parsing product(FindCustomPriceOutlet:1)", err)
+			return nil, sql_err.ParseError(err)
+		}
+
+		customPrices = append(customPrices, price)
+	}
+
+	return customPrices, nil
 }
