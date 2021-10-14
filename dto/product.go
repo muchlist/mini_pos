@@ -57,3 +57,28 @@ type ProductEditModel struct {
 	MasterBuyPrice  int             `json:"master_buy_price"`
 	MasterSellPrice int             `json:"master_sell_price"`
 }
+
+type ProductPriceModel struct {
+	ID        UppercaseString `json:"id"` // combine productID-outletID
+	ProductID int             `json:"product_id"`
+	OutletID  int             `json:"outlet_id"`
+	BuyPrice  int             `json:"buy_price"`
+	SellPrice int             `json:"sell_price"`
+	UpdatedAt int64           `json:"updated_at"`
+}
+
+type ProductPriceRequest struct {
+	ProductID int `json:"product_id"`
+	OutletID  int `json:"outlet_id"`
+	BuyPrice  int `json:"buy_price"`
+	SellPrice int `json:"sell_price"`
+}
+
+func (p ProductPriceRequest) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProductID, validation.Required),
+		validation.Field(&p.OutletID, validation.Required),
+		validation.Field(&p.BuyPrice, validation.Required),
+		validation.Field(&p.SellPrice, validation.Required),
+	)
+}
