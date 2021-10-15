@@ -23,6 +23,19 @@ type OutletHandler struct {
 	service outlet_serv.OutletServiceAssumer
 }
 
+// CreateOutlet menambahkan outlets
+// @Summary create outlet for merchant user
+// @Description Menambahkan outlets sesuai dengan ID merchant yang melekat di user
+// @ID outlet-create
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Param ReqBody body dto.OutletCreateRequest true "Body raw JSON"
+// @Success 200 {object} wrap.Resp{data=wrap.RespMsgExample}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /outlets [post]
 func (u *OutletHandler) CreateOutlet(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -72,6 +85,20 @@ func (u *OutletHandler) CreateOutlet(c *fiber.Ctx) error {
 		})
 }
 
+// Edit
+// @Summary edit outlet
+// @Description melakukan perubahan data pada outlet
+// @ID outlet-edit
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Param id path int true "Outlet ID"
+// @Param ReqBody body dto.OutletEditRequest true "Body raw JSON"
+// @Success 200 {object} wrap.Resp{data=dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /outlets/{id} [put]
 func (u *OutletHandler) Edit(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -126,6 +153,19 @@ func (u *OutletHandler) Edit(c *fiber.Ctx) error {
 		})
 }
 
+// Delete menghapus outlet
+// @Summary delete outlet by ID
+// @Description menghapus outlet berdasarkan ID
+// @ID outlet-delete
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Param id path int true "Outlet ID"
+// @Success 200 {object} wrap.RespMsgExample
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /outlets/{id} [delete]
 func (u *OutletHandler) Delete(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {
@@ -168,6 +208,19 @@ func (u *OutletHandler) Delete(c *fiber.Ctx) error {
 		})
 }
 
+// Get menampilkan outlet berdasarkan id
+// @Summary get outlet by ID
+// @Description menampilkan outlet berdasarkan userID
+// @ID outlet-get
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Param id path int true "Outlet ID"
+// @Success 200 {object} wrap.Resp{data=dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /outlets/{id} [get]
 func (u *OutletHandler) Get(c *fiber.Ctx) error {
 	outletID, err := c.ParamsInt("id")
 	if err != nil {
@@ -192,12 +245,35 @@ func (u *OutletHandler) Get(c *fiber.Ctx) error {
 	})
 }
 
+// Find menampilkan list outlet
+// @Summary find outlet
+// @Description menampilkan daftar outlet
+// @ID outlet-find
+// @Accept json
+// @Produce json
+// @Tags Access
+// @Security bearerAuth
+// @Param limit query int false "Limit"
+// @Param offset query int false "Offset cursor untuk skip data sebanyak offsite"
+// @Param search query string false "Search apabila di isi akan melakukan pencarian berdasarkan nama outlet"
+// @Success 200 {object} wrap.Resp{data=[]dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /outlets [get]
 func (u *OutletHandler) Find(c *fiber.Ctx) error {
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
 	limit := sfunc.StrToInt(c.Query("limit"), 10)
 	offset := sfunc.StrToInt(c.Query("offset"), 0)
 	search := c.Query("search")
 
-	outletList, apiErr := u.service.FindOutlets(c.Context(), search, limit, offset)
+	outletList, apiErr := u.service.FindOutlets(c.Context(), *claims, search, limit, offset)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
@@ -214,6 +290,18 @@ func (u *OutletHandler) Find(c *fiber.Ctx) error {
 	})
 }
 
+// GetCurrentOutlet menampilkan outlet berdasarkan user yang login
+// @Summary get outlet by current user
+// @Description menampilkan outlet berdasarkan user yang saat ini login
+// @ID outlet-curent
+// @Accept json
+// @Produce json
+// @Tags Outlet
+// @Security bearerAuth
+// @Success 200 {object} wrap.Resp{data=dto.OutletModel}
+// @Failure 400 {object} wrap.Resp{error=wrap.ErrorExample400}
+// @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
+// @Router /current-outlet [get]
 func (u *OutletHandler) GetCurrentOutlet(c *fiber.Ctx) error {
 	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
 	if !ok {

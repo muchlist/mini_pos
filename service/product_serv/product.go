@@ -17,8 +17,8 @@ type ProductServiceAssumer interface {
 }
 
 type ProductServiceReader interface {
-	Get(ctx context.Context, productID int, outletID int) (*dto.ProductModel, rest_err.APIError)
-	FindProducts(ctx context.Context, search string, limit int, offset int, outletSpecific int) ([]dto.ProductModel, rest_err.APIError)
+	Get(ctx context.Context, claims mjwt.CustomClaim, productID int, outletID int) (*dto.ProductModel, rest_err.APIError)
+	FindProducts(ctx context.Context, claims mjwt.CustomClaim, params FindProductsParams) ([]dto.ProductModel, rest_err.APIError)
 }
 
 type ProductServiceModifier interface {
@@ -96,9 +96,9 @@ func (u *productService) SetCustomPrice(ctx context.Context, claims mjwt.CustomC
 	timeNow := time.Now().Unix()
 
 	// verifikasi apakah product berasal dari merchant yang sama dengan user
-	product, err := u.dao.Get(ctx, price.ProductID)
+	product, err := u.dao.Get(ctx, price.ProductID, claims.Merchant)
 	if err != nil {
-		return nil, err
+		return nil, rest_err.NewBadRequestError("User tidak memeiliki hak akses untuk merubah harga product ini")
 	}
 	if product.MerchantID != claims.Merchant {
 		return nil, rest_err.NewBadRequestError("User tidak memeiliki hak akses untuk merubah harga product ini")
@@ -138,14 +138,14 @@ func (u *productService) SetCustomPrice(ctx context.Context, claims mjwt.CustomC
 }
 
 // GetProductByID mendapatkan product dari database
-func (u *productService) Get(ctx context.Context, productID int, outletID int) (*dto.ProductModel, rest_err.APIError) {
+func (u *productService) Get(ctx context.Context, claims mjwt.CustomClaim, productID int, outletID int) (*dto.ProductModel, rest_err.APIError) {
 	var product *dto.ProductModel
 	var err rest_err.APIError
 	if outletID != 0 {
 		// tampilkan harga dengan outlet spesifik
 		product, err = u.dao.GetWithCustomPriceOutlet(ctx, productID, outletID)
 	} else {
-		product, err = u.dao.Get(ctx, productID)
+		product, err = u.dao.Get(ctx, productID, claims.Merchant)
 	}
 	if err != nil {
 		return nil, err
@@ -154,19 +154,26 @@ func (u *productService) Get(ctx context.Context, productID int, outletID int) (
 	return product, nil
 }
 
+type FindProductsParams struct {
+	Search         string
+	Limit          int
+	Offset         int
+	OutletSpecific int
+}
+
 // FindProducts
-func (u *productService) FindProducts(ctx context.Context, search string, limit int, offset int, outletSpecific int) ([]dto.ProductModel, rest_err.APIError) {
+func (u *productService) FindProducts(ctx context.Context, claims mjwt.CustomClaim, params FindProductsParams) ([]dto.ProductModel, rest_err.APIError) {
 	productList, err := u.dao.FindWithPagination(ctx, product_dao.FindParams{
-		Search: search,
-		Limit:  limit,
-		Offset: offset,
-	})
+		Search: params.Search,
+		Limit:  params.Limit,
+		Offset: params.Offset,
+	}, claims.Merchant)
 	if err != nil {
 		return nil, err
 	}
 
-	if outletSpecific != 0 {
-		customPrices, err := u.dao.FindCustomPriceOutlet(ctx, outletSpecific)
+	if params.OutletSpecific != 0 {
+		customPrices, err := u.dao.FindCustomPriceOutlet(ctx, params.OutletSpecific)
 		if err != nil {
 			logger.Info("Custom Price gagal didapatkan")
 		}

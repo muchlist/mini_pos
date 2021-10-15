@@ -21,9 +21,9 @@ type ProductSaver interface {
 }
 
 type ProductLoader interface {
-	Get(ctx context.Context, id int) (*dto.ProductModel, rest_err.APIError)
+	Get(ctx context.Context, id int, merchantFilter int) (*dto.ProductModel, rest_err.APIError)
 	GetWithCustomPriceOutlet(ctx context.Context, id int, outletID int) (*dto.ProductModel, rest_err.APIError)
 	GetPriceDataWithID(ctx context.Context, priceID string) (*dto.ProductPriceModel, rest_err.APIError)
-	FindWithPagination(ctx context.Context, opt FindParams) ([]dto.ProductModel, rest_err.APIError)
+	FindWithPagination(ctx context.Context, opt FindParams, merchantFilter int) ([]dto.ProductModel, rest_err.APIError)
 	FindCustomPriceOutlet(ctx context.Context, outletID int) ([]dto.ProductPriceModel, rest_err.APIError)
 }

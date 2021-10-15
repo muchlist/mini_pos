@@ -1,7 +1,9 @@
 package app
 
 import (
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/muchlist/mini_pos/configs/roles"
 	"github.com/muchlist/mini_pos/dao/merchant_dao"
@@ -46,6 +48,19 @@ func prepareEndPoint(app *fiber.App) {
 	productHandler := handler.NewProductHandler(productService)
 
 	app.Use(logger.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Content-Type, Accept, Authorization",
+	}))
+
+	app.Get("/swagger/*", swagger.Handler) // default
+
+	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
+		URL:         "http://localhost.com/docs/swagger.json",
+		DeepLinking: false,
+		// Expand ("list") or Collapse ("none") tag groups by default
+		DocExpansion: "none",
+	}))
 
 	app.Static("/image/products", "./static/image/products")
 

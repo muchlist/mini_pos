@@ -1,0 +1,1602 @@
+basePath: /api/v1
+definitions:
+  dto.Merchant:
+    properties:
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.MerchantCreateReq:
+    properties:
+      default_password:
+        example: secret
+        type: string
+      description:
+        example: penjualan barang barang tidak kasat mata
+        type: string
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      owner_email:
+        example: example@gmail.com
+        type: string
+      owner_name:
+        example: MUCHLIS
+        type: string
+    type: object
+  dto.MerchantCreateRes:
+    properties:
+      merchant_id:
+        example: 1
+        type: integer
+      merchant_name:
+        example: KUKUS-TOKO
+        type: string
+      owner_email:
+        example: example@gmail.com
+        type: string
+      owner_name:
+        example: MUCHLIS
+        type: string
+    type: object
+  dto.MerchantEditReq:
+    properties:
+      merchant_name:
+        example: KUKUS TOKO
+        type: string
+    type: object
+  dto.OutletCreateRequest:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      outlet_name:
+        example: BLOK B
+        type: string
+    type: object
+  dto.OutletEditRequest:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      outlet_name:
+        example: BLOK B
+        type: string
+    type: object
+  dto.OutletModel:
+    properties:
+      address:
+        example: Jl Pangeran Samudera
+        type: string
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      merchant_id:
+        example: 1
+        type: integer
+      outlet_name:
+        example: BLOK B
+        type: string
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.ProductCreateRequest:
+    properties:
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+    type: object
+  dto.ProductEditRequest:
+    properties:
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+    type: object
+  dto.ProductModel:
+    properties:
+      buy_price:
+        description: berasal dari table lain
+        example: 1000000
+        type: integer
+      code:
+        description: SKU
+        example: CAT-20
+        type: string
+      created_at:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      image:
+        example: image/products/121634211915.jpg
+        type: string
+      master_buy_price:
+        example: 1000000
+        type: integer
+      master_sell_price:
+        example: 1050000
+        type: integer
+      merchant_id:
+        example: 20
+        type: integer
+      name:
+        example: JAM TANGAN
+        type: string
+      sell_price:
+        description: berasal dari table lain
+        example: 1000000
+        type: integer
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.ProductPriceRequest:
+    properties:
+      buy_price:
+        example: 1000000
+        type: integer
+      outlet_id:
+        example: 20
+        type: integer
+      product_id:
+        example: 1
+        type: integer
+      sell_price:
+        example: 1050000
+        type: integer
+    type: object
+  dto.UserEditRequest:
+    properties:
+      def_outlet:
+        example: 1
+        type: integer
+      email:
+        example: example@example.com
+        type: string
+      name:
+        example: muchlis
+        type: string
+      role:
+        example: employee
+        type: string
+    type: object
+  dto.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.UserLoginResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1N.ywibmFtZSI6IkR5cGUiOjB9.aFjz4esDQ4-_K3dMUmo
+        type: string
+      def_outlet:
+        example: 1
+        type: integer
+      email:
+        example: example@example.com
+        type: string
+      expired:
+        example: 1631341964
+        type: integer
+      id:
+        example: 1
+        type: integer
+      merchant_id:
+        example: 1
+        type: integer
+      name:
+        example: muchlis
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1N.ywibmFtZSI6IkR5cGUiOjB9.aFjz4esDQ4-_K3dMUmo
+        type: string
+      role:
+        example: owner,employee
+        type: string
+    type: object
+  dto.UserModel:
+    properties:
+      created_at:
+        example: 1631341964
+        type: integer
+      def_outlet:
+        example: 1
+        type: integer
+      email:
+        example: example@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      merchant_id:
+        example: 1
+        type: integer
+      name:
+        example: muchlis
+        type: string
+      role:
+        example: owner,employee
+        type: string
+      updated_at:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.UserRefreshTokenRequest:
+    properties:
+      refresh_token:
+        example: eyJhbGciOiJIUzI1N.ywibmFtZSI6IkR5cGUiOjB9.aFjz4esDQ4-_K3dMUmo
+        type: string
+    type: object
+  dto.UserRefreshTokenResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1N.ywibmFtZSI6IkR5cGUiOjB9.aFjz4esDQ4-_K3dMUmo
+        type: string
+      expired:
+        example: 1631341964
+        type: integer
+    type: object
+  dto.UserRegisterRequest:
+    properties:
+      def_outlet:
+        example: 1
+        type: integer
+      email:
+        example: example@example.com
+        type: string
+      name:
+        example: muchlis
+        type: string
+      password:
+        example: password123
+        type: string
+      role:
+        example: owner,employee
+        type: string
+    type: object
+  wrap.ErrorExample400:
+    properties:
+      causes:
+        example:
+        - causes 1
+        - causes 2
+        items:
+          type: string
+        type: array
+      error:
+        example: unauthorized
+        type: string
+      message:
+        example: Unauthorized, memerlukan hak akses [ADMIN]
+        type: string
+      status:
+        example: 401
+        type: integer
+    type: object
+  wrap.ErrorExample500:
+    properties:
+      causes:
+        example:
+        - 'ERROR: argument of WHERE must be type boolean. not type integer (SQLSTATE
+          42804)'
+        items:
+          type: string
+        type: array
+      error:
+        example: internal_server_error
+        type: string
+      message:
+        example: gagal saat penghapusan item
+        type: string
+      status:
+        example: 500
+        type: integer
+    type: object
+  wrap.Resp:
+    properties:
+      data:
+        type: object
+        x-nullable: true
+      error:
+        type: object
+        x-nullable: true
+    type: object
+  wrap.RespMsgExample:
+    properties:
+      data:
+        example: Data dengan ID xxx berhasil di [Create/Delete]
+        type: string
+        x-nullable: true
+      error:
+        type: object
+        x-nullable: true
+    type: object
+host: localhost:3500
+info:
+  contact:
+    email: whois.muchlis@gmail.com
+    name: API Support
+  description: Mini Pos Api
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: mini_pos API
+  version: "1.0"
+paths:
+  /current-outlet:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan outlet berdasarkan user yang saat ini login
+      operationId: outlet-curent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get outlet by current user
+      tags:
+      - Outlet
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: login menggunakan userID dan password untuk mendapatkan JWT Token
+      operationId: user-login
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserLoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      summary: login
+      tags:
+      - Access
+  /merchant:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar merchant
+      operationId: merchant-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          merchant
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.Merchant'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find merchant
+      tags:
+      - Merchant
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan merchant juga akan membuat user dengan role owner
+      operationId: merchant-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MerchantCreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.MerchantCreateRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create merchant and owner user
+      tags:
+      - Merchant
+  /merchant/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus merchant berdasarkan ID
+      operationId: merchant-delete
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete merchant by ID
+      tags:
+      - Merchant
+    get:
+      consumes:
+      - application/json
+      description: menampilkan user berdasarkan userID
+      operationId: merchant-get
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Merchant'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get user by ID
+      tags:
+      - Merchant
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada merchant
+      operationId: merchant-edit
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MerchantEditReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Merchant'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit merchant
+      tags:
+      - Merchant
+  /outlets:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar outlet
+      operationId: outlet-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          outlet
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.OutletModel'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find outlet
+      tags:
+      - Access
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan outlets sesuai dengan ID merchant yang melekat di user
+      operationId: outlet-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OutletCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/wrap.RespMsgExample'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create outlet for merchant user
+      tags:
+      - Outlet
+  /outlets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus outlet berdasarkan ID
+      operationId: outlet-delete
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete outlet by ID
+      tags:
+      - Outlet
+    get:
+      consumes:
+      - application/json
+      description: menampilkan outlet berdasarkan userID
+      operationId: outlet-get
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get outlet by ID
+      tags:
+      - Outlet
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada outlet
+      operationId: outlet-edit
+      parameters:
+      - description: Outlet ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OutletEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit outlet
+      tags:
+      - Outlet
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar product untuk merchant tertentu, gunakan query
+        outlet untuk mendapatkan harga product sesuai outlet
+      operationId: product-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+          outlet
+        in: query
+        name: search
+        type: string
+      - description: tambahkan outlet untuk melihat harga outlet tertentu
+        in: query
+        name: outlet
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.OutletModel'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find product
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan product sesuai dengan ID merchant yang melekat di user
+      operationId: product-create
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/wrap.RespMsgExample'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: create product for merchant user
+      tags:
+      - Product
+  /products-image/{id}:
+    post:
+      consumes:
+      - application/json
+      description: menambahkan foto pada product
+      operationId: product-upload-photo
+      parameters:
+      - description: file gambar
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ProductModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: menambahkan foto pada product
+      tags:
+      - Product
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus product berdasarkan ID
+      operationId: product-delete
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete product by ID
+      tags:
+      - Outlet
+    get:
+      consumes:
+      - application/json
+      description: menampilkan product berdasarkan userID, query outlet untuk mendapatkan
+        harga custom pada outlet tertentu
+      operationId: product-get
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Outlet Price
+        in: query
+        name: outlet
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ProductModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get product by ID
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada product
+      operationId: product-edit
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit product
+      tags:
+      - Product
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan profile berdasarkan user yang login saat ini
+      operationId: user-profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserModel'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get current profile
+      tags:
+      - Access
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: mendapatkan token dengan tambahan waktu expired menggunakan refresh
+        token
+      operationId: user-refresh
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserRefreshTokenResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      summary: refresh token
+      tags:
+      - Access
+  /set-price/{id}:
+    post:
+      consumes:
+      - application/json
+      description: menambahkan harga custom product pada outlet tertentu
+      operationId: product-set-price
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ProductPriceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.OutletModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: menambahkan harga custom
+      tags:
+      - Product
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: menampilkan daftar user
+      operationId: user-find
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset cursor untuk skip data sebanyak offsite
+        in: query
+        name: offset
+        type: integer
+      - description: Search apabila di isi akan melakukan pencarian berdasarkan nama
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.UserModel'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: find user
+      tags:
+      - Access
+    post:
+      consumes:
+      - application/json
+      description: menambahkan user pada merchant sesuai usr owner, endpoint ini membutuhkan
+        hak akses owner, sedangkan akun owner dapat didapatkan ketika membuat Merchant
+      operationId: user-register
+      parameters:
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: register user
+      tags:
+      - Access
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: menghapus user berdasarkan userID
+      operationId: user-delete
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wrap.RespMsgExample'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: delete user by ID
+      tags:
+      - Access
+    get:
+      consumes:
+      - application/json
+      description: menampilkan user berdasarkan userID
+      operationId: user-get
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: get user by ID
+      tags:
+      - Access
+    put:
+      consumes:
+      - application/json
+      description: melakukan perubahan data pada user
+      operationId: user-edit
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Body raw JSON
+        in: body
+        name: ReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.UserModel'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample400'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrap.Resp'
+            - properties:
+                error:
+                  $ref: '#/definitions/wrap.ErrorExample500'
+              type: object
+      security:
+      - bearerAuth: []
+      summary: edit user
+      tags:
+      - Access
+securityDefinitions:
+  bearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

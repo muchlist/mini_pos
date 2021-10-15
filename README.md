@@ -1,5 +1,5 @@
 # mini_pos
-Aplikasi mini_pos untuk test backend Majo
+Aplikasi mini_pos untuk test backend.
 
 ## Environment variable
 Aplikasi membutuhkan variable yang wajib diisi untuk koneksi ke database dan keamanan JWT
@@ -9,10 +9,24 @@ file ini akan diload ketika program dijalankan.
 
 ## Database
 Aplikasi memerlukan database `PostgreSQL` dengan nama database `minipos`.  
-adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya.
+adapun Table yang dibutuhkan ada pada file `doc/database.sql` : (tidak sempat dibuat automigration) berikut dengan ERD nya pada file `doc/minipos_erd.pdf`.
+
+## Menjalankan Aplikasi
+1. jalankan perintah `go mod tidy` untuk mendownload dependency
+2. jalankan `go run main.go` untuk mulai menjalankan aplikasi semasa pengujian
+3. buka browser dan jelajah `http://127.0.0.1:3500/swagger/index.html` untuk menjalankan dokumentasi rest-api
+4. atau import file hasil export postman di folder /doc
+
+## Swagger
+untuk memperbarui doc swagger bisa menggunakan `swag init -g app/app.go` . Juga lakukan ini apabila isi folder /docs kosong.  
+Swagger Doc bisa diakses melalui `http://127.0.0.1:3500/swagger/index.html`.
+
+Gunakan token `Bearer<spasi><Token tanpa petik>` pada menu Authorize yang bisa dibuka dengan mengklik tombol hijau di kanan atas menu swager.
+
 
 ## Endpoint
-postman config disertakan pada file `doc/minipos.postman_collection.json`. jika diberikan waktu tambahan, saya memungkinkan saya bisa saja membuatkan swagger doc, namun memerlukan waktu tambahan:
+postman config disertakan pada file `doc/minipos.postman_collection.json`.
+
 
 ### Daftar lengkap map url
 ```
@@ -58,9 +72,10 @@ postman config disertakan pada file `doc/minipos.postman_collection.json`. jika 
 	*/
 ```
 
+
 ## Memulai pengujian  <========================
 1. Dimulai dari Merhcant endpoint, Pembuatan merchant akan membuat otomatis 1 user dengan role owner.  adapun passwordnya kita yang menentukan karena tidak ada verifikasi email pada aplikasi ini. gunakan email masukan dan password masukan sebagai data untuk login.
-2. Ketika mulai login, user akan mendapatkan token JWT yang harus dibawa pada header dengan format Bearer. semua endpoint yang memiliki `middleware.NormalAuth()` akan mengecek keabsahan token dan role yang diperlukan. `middleware.FreshAuth()` memerlukan Token yang fresh (bukan hasil refresh token) 
+2. Ketika mulai login, user akan mendapatkan token JWT yang harus dibawa pada header dengan format Bearer. semua endpoint yang memiliki `middleware.NormalAuth()` akan mengecek keabsahan token dan role yang diperlukan. `middleware.FreshAuth()` memerlukan Token yang fresh (bukan hasil refresh token)
 3. Buatlah satu buah outlet, outlet tersebut ditandai sebagai milik merchant yang sesuai dengan akun dengan role owner yang login.
 4. Product memiliki data master harga yang agak unik perlakuannya. Menambahkan produk akan menambahkan master produk sesuai merhcant user.
 5. User dapat menambahkan custom harga produk untuk outlet tertentu. untuk mendapatkan harga sesuai outlet tertentu, ketika melakukan get product harus menyertakan query `<url>?outlet=nomor_outlet`. contoh `{{url}}/api/v1/products/6?outlet=2`.  begitu juga dengan mendapatkan list product `{{url}}/api/v1/products?search=&outlet=2`. tanpa query outlet maka data master harga yang akan ditampilkan.

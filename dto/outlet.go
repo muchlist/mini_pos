@@ -3,17 +3,17 @@ package dto
 import validation "github.com/go-ozzo/ozzo-validation/v4"
 
 type OutletModel struct {
-	ID         int             `json:"id"`
-	MerchantID int             `json:"merchant_id"`
-	OutletName UppercaseString `json:"outlet_name"`
-	Address    string          `json:"address"`
-	CreatedAt  int64           `json:"created_at"`
-	UpdatedAt  int64           `json:"updated_at"`
+	ID         int             `json:"id" example:"1"`
+	MerchantID int             `json:"merchant_id" example:"1"`
+	OutletName UppercaseString `json:"outlet_name" example:"BLOK B"`
+	Address    string          `json:"address" example:"Jl Pangeran Samudera"`
+	CreatedAt  int64           `json:"created_at" example:"1631341964"`
+	UpdatedAt  int64           `json:"updated_at" example:"1631341964"`
 }
 
 type OutletCreateRequest struct {
-	OutletName string `json:"outlet_name"`
-	Address    string `json:"address"`
+	OutletName string `json:"outlet_name" example:"BLOK B"`
+	Address    string `json:"address" example:"Jl Pangeran Samudera"`
 }
 
 func (o OutletCreateRequest) Validate() error {
@@ -25,8 +25,8 @@ func (o OutletCreateRequest) Validate() error {
 
 type OutletEditRequest struct {
 	ID         int    `json:"-"`
-	OutletName string `json:"outlet_name"`
-	Address    string `json:"address"`
+	OutletName string `json:"outlet_name" example:"BLOK B"`
+	Address    string `json:"address" example:"Jl Pangeran Samudera"`
 }
 
 func (o OutletEditRequest) Validate() error {
