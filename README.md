@@ -1,5 +1,5 @@
 # mini_pos
-Aplikasi mini_pos untuk test backend Majo
+Aplikasi mini_pos untuk test backend.
 
 ## Environment variable
 Aplikasi membutuhkan variable yang wajib diisi untuk koneksi ke database dan keamanan JWT
@@ -26,6 +26,7 @@ Gunakan token `Bearer<spasi><Token tanpa petik>` pada menu Authorize yang bisa d
 
 ## Endpoint
 postman config disertakan pada file `doc/minipos.postman_collection.json`.
+
 
 ### Daftar lengkap map url
 ```
