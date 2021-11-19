@@ -111,11 +111,12 @@ func (o *outletDao) Delete(ctx context.Context, id int, filterMerchant int) rest
 	return nil
 }
 
-func (o *outletDao) Get(ctx context.Context, id int) (*dto.OutletModel, rest_err.APIError) {
+func (o *outletDao) Get(ctx context.Context, id int, merchantIDifSpecific int) (*dto.OutletModel, rest_err.APIError) {
 	sqlStatement, args, err := o.sb.Select(keyID, keyMerchantID, keyOutletName, keyAddress, keyCreatedAt, keyUpdatedAt).
 		From(keyOutletTable).
 		Where(squirrel.Eq{
-			keyID: id,
+			keyID:         id,
+			keyMerchantID: merchantIDifSpecific,
 		}).ToSql()
 
 	if err != nil {

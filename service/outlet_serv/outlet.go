@@ -15,7 +15,7 @@ type OutletServiceAssumer interface {
 }
 
 type OutletServiceReader interface {
-	GetOutletByID(ctx context.Context, outletID int) (*dto.OutletModel, rest_err.APIError)
+	GetOutletByID(ctx context.Context, claims mjwt.CustomClaim, outletID int) (*dto.OutletModel, rest_err.APIError)
 	FindOutlets(ctx context.Context, claims mjwt.CustomClaim, search string, limit int, offset int) ([]dto.OutletModel, rest_err.APIError)
 }
 
@@ -77,8 +77,8 @@ func (u *outletService) DeleteOutlet(ctx context.Context, claims mjwt.CustomClai
 }
 
 // GetOutletByID mendapatkan outlet dari database
-func (u *outletService) GetOutletByID(ctx context.Context, outletID int) (*dto.OutletModel, rest_err.APIError) {
-	outlet, err := u.dao.Get(ctx, outletID)
+func (u *outletService) GetOutletByID(ctx context.Context, claims mjwt.CustomClaim, outletID int) (*dto.OutletModel, rest_err.APIError) {
+	outlet, err := u.dao.Get(ctx, outletID, claims.Merchant)
 	if err != nil {
 		return nil, err
 	}

@@ -222,6 +222,15 @@ func (u *OutletHandler) Delete(c *fiber.Ctx) error {
 // @Failure 500 {object} wrap.Resp{error=wrap.ErrorExample500}
 // @Router /outlets/{id} [get]
 func (u *OutletHandler) Get(c *fiber.Ctx) error {
+	claims, ok := c.Locals(mjwt.CLAIMS).(*mjwt.CustomClaim)
+	if !ok {
+		apiErr := rest_err.NewInternalServerError("internal error", errors.New("claims assert failed"))
+		return c.Status(apiErr.Status()).JSON(wrap.Resp{
+			Data:  nil,
+			Error: apiErr,
+		})
+	}
+
 	outletID, err := c.ParamsInt("id")
 	if err != nil {
 		apiErr := rest_err.NewBadRequestError("kesalahan input, id harus berupa angka")
@@ -231,7 +240,7 @@ func (u *OutletHandler) Get(c *fiber.Ctx) error {
 		})
 	}
 
-	outlet, apiErr := u.service.GetOutletByID(c.Context(), outletID)
+	outlet, apiErr := u.service.GetOutletByID(c.Context(), *claims, outletID)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
@@ -321,7 +330,7 @@ func (u *OutletHandler) GetCurrentOutlet(c *fiber.Ctx) error {
 		})
 	}
 
-	outlet, apiErr := u.service.GetOutletByID(c.Context(), claims.Identity)
+	outlet, apiErr := u.service.GetOutletByID(c.Context(), *claims, claims.Identity)
 	if apiErr != nil {
 		return c.Status(apiErr.Status()).JSON(wrap.Resp{
 			Data:  nil,
