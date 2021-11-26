@@ -18,6 +18,6 @@ type OutletSaver interface {
 }
 
 type OutletLoader interface {
-	Get(ctx context.Context, id int) (*dto.OutletModel, rest_err.APIError)
+	Get(ctx context.Context, id int, merchantIDifSpecific int) (*dto.OutletModel, rest_err.APIError)
 	FindWithPagination(ctx context.Context, opt FindParams, merchantFilter int) ([]dto.OutletModel, rest_err.APIError)
 }
